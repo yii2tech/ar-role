@@ -1,0 +1,30 @@
+{
+    "name": "yii2tech/ar-role",
+    "description": "Provides support for ActiveRecord relation role (table inheritance) composition in Yii2",
+    "keywords": ["yii2", "active", "record", "role", "relation", "table", "inheritance"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yii2tech/ar-role/issues",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "https://github.com/yii2tech/ar-role/wiki",
+        "source": "https://github.com/yii2tech/ar-role"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": { "yii2tech\\ar\\role\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
