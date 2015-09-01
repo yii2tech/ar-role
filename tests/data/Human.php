@@ -30,4 +30,9 @@ class Human extends ActiveRecord
             ['address', 'required'],
         ];
     }
+
+    public function sayHello($name)
+    {
+        return 'Hello, ' . $name;
+    }
 }

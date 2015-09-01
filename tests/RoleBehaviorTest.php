@@ -152,4 +152,13 @@ class RoleBehaviorTest extends TestCase
 
         $this->assertFalse(Human::find()->where(['id' => $model->humanId])->exists());
     }
+
+    /**
+     * @depends testFieldAccess
+     */
+    public function testInvokeRoleRelatedModelMethod()
+    {
+        $model = new Instructor();
+        $this->assertEquals('Hello, John', $model->sayHello('John'));
+    }
 }

@@ -180,7 +180,9 @@ class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
 ```
 
 This approach does not require extra ActiveRecord class for functioning and it does not need default scope specification.
-But it does not inherit logic declared in the base ActiveRecord.
+It does not directly inherit logic declared in the base ActiveRecord, however any custom method declared in the related
+class will be available via magic method `__call()` mechanism. Thus if class `Human` has method `sayHello()`, you are
+able to invoke it through `Instructor` instance.
 
 This approach should be chosen in case most functionality depends on the 'Instructor' attributes.
 
@@ -207,6 +209,43 @@ $model->studyGroupId = 12;
 $model = new Instructor();
 $model->name = 'John Doe';
 ```
+
+
+## Accessing role methods <span id="accessing-role-methods"></span>
+
+Any non-static method declared in the model related via [[\yii2tech\ar\role\RoleBehavior::roleRelation]] can be accessed
+from the owner model:
+
+```php
+class Human extends \yii\db\ActiveRecord
+{
+    // ...
+
+    public function sayHello($name)
+    {
+        return 'Hello, ' . $name;
+    }
+}
+
+class Instructor extends \yii\db\ActiveRecord
+{
+    public function behaviors()
+    {
+        return [
+            'roleBehavior' => [
+                'class' => RoleBehavior::className(), // Attach role behavior
+                // ...
+            ],
+        ];
+    }
+}
+
+$model = new Instructor();
+echo $model->sayHello('John'); // outputs: 'Hello, John'
+```
+
+This feature allows to inherit logic from the base role model in case of using 'slave' behavior setup approach.
+However, this works both for the 'master' and 'slave' role approaches.
 
 
 ## Validation <span id="validation"></span>

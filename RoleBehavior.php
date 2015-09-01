@@ -190,6 +190,33 @@ class RoleBehavior extends Behavior
         return $model->hasAttribute($name) || $model->canSetProperty($name, $checkVars);
     }
 
+    // Method Access Extension:
+
+    /**
+     * @inheritdoc
+     */
+    public function __call($name, $params)
+    {
+        $model = $this->getRoleRelationModel();
+        if ($model->hasMethod($name)) {
+            return call_user_func_array([$model, $name], $params);
+        }
+
+        return parent::__call($name, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasMethod($name)
+    {
+        if (parent::hasMethod($name)) {
+            return true;
+        }
+        $model = $this->getRoleRelationModel();
+        return $model->hasMethod($name);
+    }
+
     // Events :
 
     /**
