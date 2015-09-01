@@ -72,6 +72,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $table = 'Human';
         $columns = [
             'id' => 'pk',
+            'role' => 'string',
             'name' => 'string',
             'address' => 'string',
         ];

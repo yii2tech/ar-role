@@ -28,6 +28,9 @@ class Instructor extends ActiveRecord
                 'class' => RoleBehavior::className(),
                 'roleRelation' => 'human',
                 'isOwnerSlave' => true,
+                'roleAttributes' => [
+                    'role' => 'instructor'
+                ],
             ],
         ];
     }

@@ -109,6 +109,9 @@ class Student extends Human // extending `Human` - not `ActiveRecord`!
             'roleBehavior' => [
                 'class' => RoleBehavior::className(), // Attach role behavior
                 'roleRelation' => 'studentRole', // specify name of the relation to the slave table
+                'roleAttributes' => [
+                    'roleId' => Human::ROLE_STUDENT // mark 'Human' record as 'student'
+                ],
             ],
         ];
     }
@@ -162,6 +165,9 @@ class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
                 'class' => RoleBehavior::className(), // Attach role behavior
                 'roleRelation' => 'human', // specify name of the relation to the master table
                 'isOwnerSlave' => true, // indicate that owner is a role slave - not master
+                'roleAttributes' => [
+                    'roleId' => Human::ROLE_STUDENT // will be applied to the 'Human' record
+                ],
             ],
         ];
     }

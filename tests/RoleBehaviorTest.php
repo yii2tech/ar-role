@@ -59,6 +59,8 @@ class RoleBehaviorTest extends TestCase
 
         $model->save(false);
 
+        $this->assertEquals('student', $model->role);
+
         $roleModel = StudentRole::findOne(['humanId' => $model->id]);
         $this->assertNotEmpty($roleModel);
         $this->assertEquals($model->studyGroupId, $roleModel->studyGroupId);
@@ -114,6 +116,7 @@ class RoleBehaviorTest extends TestCase
         $roleModel = Human::findOne($model->humanId);
         $this->assertNotEmpty($roleModel);
         $this->assertEquals($model->name, $roleModel->name);
+        $this->assertEquals('instructor', $model->role);
     }
 
     /**

@@ -21,6 +21,9 @@ class Student extends Human
             'roleBehavior' => [
                 'class' => RoleBehavior::className(),
                 'roleRelation' => 'studentRole',
+                'roleAttributes' => [
+                    'role' => 'student'
+                ],
             ],
         ];
     }
