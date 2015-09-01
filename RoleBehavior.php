@@ -14,10 +14,56 @@ use yii\db\BaseActiveRecord;
 
 /**
  * RoleBehavior provides support for ActiveRecord relation role composition, which is also known as table inheritance.
+ * For example: the database of the University, which have 'students' and 'instructors', which a both 'humans'.
  *
+ * Master role inheritance:
  *
+ * ```php
+ * class Student extends Human // extending `Human` - not `ActiveRecord`!
+ * {
+ *     public function behaviors()
+ *     {
+ *         return [
+ *             'roleBehavior' => [
+ *                 'class' => RoleBehavior::className(), // Attach role behavior
+ *                 'roleRelation' => 'studentRole', // specify name of the relation to the slave table
+ *             ],
+ *         ];
+ *     }
+ *
+ *     public function getStudentRole()
+ *     {
+ *         // Here `StudentRole` is and ActiveRecord, which uses 'Student' table :
+ *         return $this->hasOne(StudentRole::className(), ['humanId' => 'id']);
+ *     }
+ * }
+ * ```
+ *
+ * Slave role inheritance:
+ *
+ * ```php
+ * class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
+ * {
+ *     public function behaviors()
+ *     {
+ *         return [
+ *             'roleBehavior' => [
+ *                 'class' => RoleBehavior::className(), // Attach role behavior
+ *                 'roleRelation' => 'human', // specify name of the relation to the master table
+ *                 'isOwnerSlave' => true, // indicate that owner is a role slave - not master
+ *             ],
+ *         ];
+ *     }
+ *
+ *     public function getHuman()
+ *     {
+ *         return $this->hasOne(Human::className(), ['id' => 'humanId']);
+ *     }
+ * }
+ * ```
  *
  * @property BaseActiveRecord $owner
+ * @property BaseActiveRecord $roleRelationModel
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -36,7 +82,9 @@ class RoleBehavior extends Behavior
 
 
     /**
-     * @return BaseActiveRecord
+     * Returns the record related via [[roleRelation]] relation.
+     * If no related record exists - new one will be instantiated.
+     * @return BaseActiveRecord role related model.
      */
     public function getRoleRelationModel()
     {

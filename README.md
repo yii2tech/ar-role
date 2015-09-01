@@ -145,6 +145,9 @@ class Student extends Human
 }
 ```
 
+This approach should be chosen in case most functionality depends on the 'Human' attributes.
+
+
 ## Slave role inheritance <span id="slave-role-inheritance"></span>
 
 This approach assumes role ActiveRecord does not extends the base one, but relates to it:
@@ -173,6 +176,8 @@ class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
 This approach does not require extra ActiveRecord class for functioning and it does not need default scope specification.
 But it does not inherit logic declared in the base ActiveRecord.
 
+This approach should be chosen in case most functionality depends on the 'Instructor' attributes.
+
 
 ## Accessing role attributes <span id="accessing-role-attributes"></span>
 
@@ -195,4 +200,133 @@ $model->studyGroupId = 12;
 
 $model = new Instructor();
 $model->name = 'John Doe';
+```
+
+
+## Validation <span id="validation"></span>
+
+Each time the main model is validated the related role model will be validated as well and its errors will be attached
+to the main model:
+
+```php
+$model = new Student();
+$model->studyGroupId = 'invalid value';
+var_dump($model->validate()); // outputs "false"
+var_dump($model->hasErrors('studyGroupId')); // outputs "true"
+```
+
+You may as well specify validation rules for the related model attributes as they belong to the main model:
+
+```php
+class Student extends Human
+{
+    // ...
+
+    public function rules()
+    {
+        return [
+            // ...
+            ['studyGroupId', 'each', 'rules' => ['integer']]
+        ];
+    }
+}
+```
+
+
+## Saving role data <span id="saving-role-data"></span>
+
+When main model is saved the related role model will be saved as well:
+
+```php
+$model = new Student();
+$model->name = 'John Doe';
+$model->address = 'Wall Street, 12';
+$model->studyGroupId = 14;
+$model->save(); // insert one record to the 'Human' table and one record - to the 'Student' table
+```
+
+When main model is deleted related role model will be delete as well:
+
+```php
+$student = Student::findOne(17);
+$student->delete(); // Deletes one record from 'Human' table and one record from 'Student' table
+```
+
+
+## Creating role setup web interface <span id="creating-role-setup-web-interface"></span>
+
+Figuratively speaking, [[\yii2tech\ar\role\RoleBehavior]] merges 2 ActiveRecords into a single one.
+This means you don't need anything special, while creating web interface for their editing.
+You may use standard CRUD controller:
+
+```php
+use yii\web\Controller;
+
+class ItemController extends Controller
+{
+    public function actionCreate()
+    {
+        $model = new Student();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view']);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    // ...
+}
+```
+
+While creating a web form you may use attributes from related role model as they belong to the main one:
+
+```php
+<?php
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $model Student */
+?>
+<?php $form = ActiveForm::begin(); ?>
+
+<?= $form->field($model, 'name'); ?>
+<?= $form->field($model, 'address'); ?>
+
+<?= $form->field($model, 'studyGroupId')->dropDownList(ArrayHelper::map(StudyGroup::find()->all(), 'id', 'name')); ?>
+<?= $form->field($model, 'hasScholarship')->checkbox(); ?>
+
+<div class="form-group">
+    <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+</div>
+
+<?php ActiveForm::end(); ?>
+```
+
+For the best integration you may as well merge labels and hints of the related model:
+
+```php
+class Student extends Human
+{
+    // ...
+
+    public function attributeLabels()
+    {
+        return array_merge(
+            parent::attributeLabels(),
+            $this->getRoleRelationModel()->attributeLabels()
+        );
+    }
+
+    public function attributeHints()
+    {
+        return array_merge(
+            parent::attributeHints(),
+            $this->getRoleRelationModel()->attributeHints()
+        );
+    }
+}
 ```
