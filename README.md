@@ -1,5 +1,5 @@
-ActiveRecord Variation Extension for Yii 2
-==========================================
+ActiveRecord Role Inheritance Extension for Yii2
+================================================
 
 This extension provides support for ActiveRecord relation role (table inheritance) composition.
 
