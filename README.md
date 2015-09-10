@@ -141,7 +141,7 @@ class Student extends Human
 {
     // ...
 
-    public static find()
+    public static function find()
     {
         return parent::find()->where(['role' => 'student']);
     }
@@ -296,6 +296,44 @@ When main model is deleted related role model will be delete as well:
 $student = Student::findOne(17);
 $student->delete(); // Deletes one record from 'Human' table and one record from 'Student' table
 ```
+
+
+## Querying role records <span id="querying-role-records"></span>
+
+[[\yii2tech\ar\role\RoleBehavior]] works through relations. Thus, in order to make role attributes feature work,
+it will perform an extra query to retrieve the role slave or master model, which may produce performance impact
+in case you are working with several models. In order to reduce number of queries you may use with() on the
+role relation:
+
+```php
+$students = Student::find()->with('studentRole')->all(); // only 2 queries will be performed
+foreach ($students as $student) {
+    echo $student->studyGroupId . '<br>';
+}
+
+$instructors = Instructor::find()->with('human')->all(); // only 2 queries will be performed
+foreach ($instructors as $instructor) {
+    echo $instructor->name . '<br>';
+}
+```
+
+You may apply 'with' for the role relation as default scope for the ActiveRecord query:
+
+```php
+class Instructor extends ActiveRecord
+{
+    // ...
+
+    public static function find()
+    {
+        return parent::find()->with('human');
+    }
+}
+```
+
+> Tip: you may name slave table primary key same as master one: use 'id' instead of 'humanId' for it.
+  In this case conditions based on primary key will be always the same. However this trick may cause extra
+  troubles in case you are using joins for role relations at some point.
 
 
 ## Creating role setup web interface <span id="creating-role-setup-web-interface"></span>
