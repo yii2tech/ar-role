@@ -126,8 +126,8 @@ class Student extends Human // extending `Human` - not `ActiveRecord`!
 
 The main benefit of this approach is that role class directly inherits all methods, validation and other logic from
 the base one. However, you'll need to declare an extra ActiveRecord class, which corresponds the role table.
-Yet another problem is you'll need to separate 'Student' records from 'Instructor' ones for the find process.
-Without this following code, will return all 'Human' records, both 'Student' and 'Instructor':
+Yet another problem is that you'll need to separate 'Student' records from 'Instructor' ones for the search process.
+Without following code, it will return all 'Human' records, both 'Student' and 'Instructor':
 
 ```php
 $students = Student::find()->all();
