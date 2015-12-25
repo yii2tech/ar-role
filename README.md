@@ -91,7 +91,7 @@ class Human extends \yii\db\ActiveRecord
 ```
 
 Then you will be able to compose ActiveRecord classes, which implements role-based inheritance using [[\yii2tech\ar\role\RoleBehavior]].
-There 2 different ways for such classes composition:
+There are 2 different ways for such classes composition:
  - Master role inheritance
  - Slave role inheritance
 
