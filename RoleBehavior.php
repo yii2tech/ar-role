@@ -253,7 +253,7 @@ class RoleBehavior extends Behavior
 
     /**
      * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring role model is saved.
-     * @param \yii\base\Event $event event instance.
+     * @param \yii\base\ModelEvent $event event instance.
      */
     public function beforeSave($event)
     {
@@ -266,10 +266,14 @@ class RoleBehavior extends Behavior
             return;
         }
 
-        $model = $this->getRoleRelationModel();
-
         $relation = $this->owner->getRelation($this->roleRelation);
         list($roleReferenceAttribute) = array_values($relation->link);
+
+        if (!$this->owner->isRelationPopulated($this->roleRelation) && $this->owner->{$roleReferenceAttribute} !== null) {
+            return;
+        }
+
+        $model = $this->getRoleRelationModel();
 
         if (!empty($this->roleAttributes)) {
             foreach ($this->roleAttributes as $name => $value) {
@@ -284,7 +288,7 @@ class RoleBehavior extends Behavior
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring role model is saved
      * in case it has been fetched before.
-     * @param \yii\base\Event $event event instance.
+     * @param \yii\base\ModelEvent $event event instance.
      */
     public function afterSave($event)
     {
@@ -307,7 +311,7 @@ class RoleBehavior extends Behavior
 
     /**
      * Handles owner 'beforeDelete' events, ensuring role model is deleted as well.
-     * @param \yii\base\Event $event event instance.
+     * @param \yii\base\ModelEvent $event event instance.
      */
     public function beforeDelete($event)
     {
@@ -319,7 +323,7 @@ class RoleBehavior extends Behavior
 
     /**
      * Handles owner 'beforeDelete' events, ensuring role model is deleted as well.
-     * @param \yii\base\Event $event event instance.
+     * @param \yii\base\ModelEvent $event event instance.
      */
     public function afterDelete($event)
     {

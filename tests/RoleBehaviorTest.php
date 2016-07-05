@@ -81,8 +81,13 @@ class RoleBehaviorTest extends TestCase
         $model->save(false);
 
         $roleModels = StudentRole::findAll(['humanId' => $model->id]);
-        $this->assertCount(1, $roleModels);
-        $this->assertEquals($model->studyGroupId, $roleModels[0]->studyGroupId);
+        $this->assertCount(1, $roleModels, 'No role model saved');
+        $this->assertEquals($model->studyGroupId, $roleModels[0]->studyGroupId, 'Unable to save data for role model');
+
+        $model = Student::findOne($model->id);
+        $model->name = 'updated name';
+        $model->save(false);
+        $this->assertFalse($model->isRelationPopulated('studentRole'), 'Role model saved, while its data not touched');
     }
 
     /**
@@ -134,7 +139,12 @@ class RoleBehaviorTest extends TestCase
         $model->save(false);
 
         $roleModel = Human::findOne($model->humanId);
-        $this->assertEquals($model->name, $roleModel->name);
+        $this->assertEquals($model->name, $roleModel->name, 'Unable to save data for role model');
+
+        $model = Instructor::findOne($model->humanId);
+        $model->salary = 150;
+        $model->save(false);
+        $this->assertFalse($model->isRelationPopulated('human'), 'Role model saved, while its data not touched');
     }
 
     /**
