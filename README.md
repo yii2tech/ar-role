@@ -271,7 +271,8 @@ class Student extends Human
     {
         return [
             // ...
-            ['studyGroupId', 'each', 'rules' => ['integer']]
+            ['studyGroupId', 'integer'],
+            ['hasScholarship', 'boolean'],
         ];
     }
 }
@@ -302,7 +303,7 @@ $student->delete(); // Deletes one record from 'Human' table and one record from
 
 [[\yii2tech\ar\role\RoleBehavior]] works through relations. Thus, in order to make role attributes feature work,
 it will perform an extra query to retrieve the role slave or master model, which may produce performance impact
-in case you are working with several models. In order to reduce number of queries you may use with() on the
+in case you are working with several models. In order to reduce number of queries you may use `with()` on the
 role relation:
 
 ```php
@@ -332,8 +333,22 @@ class Instructor extends ActiveRecord
 ```
 
 > Tip: you may name slave table primary key same as master one: use 'id' instead of 'humanId' for it.
-  In this case conditions based on primary key will be always the same. However this trick may cause extra
+  In this case conditions based on primary key will be always the same. However, this trick may cause extra
   troubles in case you are using joins for role relations at some point.
+
+If you need to specify search condition based on fields from both entities and you are using relational database,
+you can use `joinWith()` method:
+
+```php
+$students = Student::find()
+    ->innerJoinWith('studentRole')
+    ->andWhere(['name' => 'John']) // condition for 'Human' table
+    ->andWhere(['hasScholarship' => true]) // condition for 'Student' table
+    ->all();
+```
+
+> Tip: using `joinWith()` will still require an extra SQL query to retrieve relational data.
+  You can use [yii2tech/ar-eagerjoin](https://github.com/yii2tech/ar-eagerjoin) extension to remove this extra query.
 
 
 ## Creating role setup web interface <span id="creating-role-setup-web-interface"></span>
@@ -345,7 +360,7 @@ You may use standard CRUD controller:
 ```php
 use yii\web\Controller;
 
-class ItemController extends Controller
+class StudentController extends Controller
 {
     public function actionCreate()
     {
@@ -353,11 +368,11 @@ class ItemController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view']);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     // ...
@@ -412,4 +427,74 @@ class Student extends Human
         );
     }
 }
+```
+
+**Heads up!** In order to work in this simple way you should declare validation rules for the role model attributes
+being 'safe' in the main one:
+
+```php
+class Student extends Human
+{
+    // ...
+
+    public function rules()
+    {
+        return [
+            // ...
+            [$this->getRoleRelationModel()->attributes(), 'safe'],
+        ];
+    }
+}
+```
+
+Otherwise you'll have to load data for the role model separately:
+
+```php
+use yii\web\Controller;
+
+class StudentController extends Controller
+{
+    public function actionCreate()
+    {
+        $model = new Student();
+
+        $post = Yii::$app->request->post();
+
+        // data loading separated, however only single save required :
+        if ($model->load($post) && $model->getRoleRelationModel()->load($post) && $model->save()) {
+            return $this->redirect(['view']);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    // ...
+}
+```
+
+You should use the role model for its inputs while creating form as well:
+
+```php
+<?php
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $model Student */
+?>
+<?php $form = ActiveForm::begin(); ?>
+
+<?= $form->field($model, 'name'); ?>
+<?= $form->field($model, 'address'); ?>
+
+<?= $form->field($model->getRoleRelationModel(), 'studyGroupId')->dropDownList(ArrayHelper::map(StudyGroup::find()->all(), 'id', 'name')); ?>
+<?= $form->field($model->getRoleRelationModel(), 'hasScholarship')->checkbox(); ?>
+
+<div class="form-group">
+    <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+</div>
+
+<?php ActiveForm::end(); ?>
 ```
