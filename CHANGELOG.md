@@ -1,8 +1,8 @@
 Yii 2 ActiveRecord Role Inheritance extension Change Log
 ========================================================
 
-1.0.1 under development
------------------------
+1.0.1, July 6, 2016
+-------------------
 
 - Enh #6: Saving on 'slave' role inheritance now skips saving of the role model, if it has not been touched (klimov-paul)
 
