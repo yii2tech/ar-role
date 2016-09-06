@@ -267,10 +267,18 @@ class RoleBehavior extends Behavior
         }
 
         $relation = $this->owner->getRelation($this->roleRelation);
-        list($roleReferenceAttribute) = array_values($relation->link);
 
-        if (!$this->owner->isRelationPopulated($this->roleRelation) && $this->owner->{$roleReferenceAttribute} !== null) {
-            return;
+        if (!$this->owner->isRelationPopulated($this->roleRelation)) {
+            $ownerLinkPopulated = true;
+            foreach ($relation->link as $to => $from) {
+                if ($this->owner->{$from} === null) {
+                    $ownerLinkPopulated = false;
+                    break;
+                }
+            }
+            if ($ownerLinkPopulated) {
+                return;
+            }
         }
 
         $model = $this->getRoleRelationModel();
@@ -282,7 +290,10 @@ class RoleBehavior extends Behavior
         }
 
         $model->save(false);
-        $this->owner->{$roleReferenceAttribute} = $model->getPrimaryKey();
+
+        foreach ($relation->link as $to => $from) {
+            $this->owner->{$from} = $model->{$to};
+        }
     }
 
     /**
@@ -303,9 +314,10 @@ class RoleBehavior extends Behavior
         $model = $this->getRoleRelationModel();
 
         $relation = $this->owner->getRelation($this->roleRelation);
-        list($ownerReferenceAttribute) = array_keys($relation->link);
+        foreach ($relation->link as $to => $from) {
+            $model->{$to} = $this->owner->{$from};
+        }
 
-        $model->{$ownerReferenceAttribute} = $this->owner->getPrimaryKey();
         $model->save(false);
     }
 

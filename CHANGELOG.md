@@ -1,6 +1,12 @@
 Yii 2 ActiveRecord Role Inheritance extension Change Log
 ========================================================
 
+1.0.2 under development
+-----------------------
+
+- Bug #7: Fixed support for composite key at role relation (bethrezen, klimov-paul)
+
+
 1.0.1, July 6, 2016
 -------------------
 
