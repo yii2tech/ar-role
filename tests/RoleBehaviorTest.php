@@ -45,6 +45,7 @@ class RoleBehaviorTest extends TestCase
 
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('studyGroupId'));
+        $this->assertEquals('student', $model->role);
     }
 
     /**

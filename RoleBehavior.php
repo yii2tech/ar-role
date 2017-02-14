@@ -225,6 +225,7 @@ class RoleBehavior extends Behavior
     public function events()
     {
         return [
+            Model::EVENT_BEFORE_VALIDATE => 'beforeValidate',
             Model::EVENT_AFTER_VALIDATE => 'afterValidate',
             BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
             BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
@@ -233,6 +234,30 @@ class RoleBehavior extends Behavior
             BaseActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
             BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
         ];
+    }
+
+    /**
+     * Handles owner 'beforeValidate' event, ensuring role attributes are populated,
+     * ensuring the correct validation.
+     * @param \yii\base\ModelEvent $event event instance.
+     */
+    public function beforeValidate($event)
+    {
+        if (empty($this->roleAttributes)) {
+            return;
+        }
+
+        if ($this->isOwnerSlave) {
+            $model = $this->getRoleRelationModel();
+            foreach ($this->roleAttributes as $name => $value) {
+                $model->$name = $value;
+            }
+            return;
+        }
+
+        foreach ($this->roleAttributes as $name => $value) {
+            $this->owner->$name = $value;
+        }
     }
 
     /**

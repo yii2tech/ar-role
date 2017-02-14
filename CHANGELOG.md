@@ -5,6 +5,7 @@ Yii 2 ActiveRecord Role Inheritance extension Change Log
 -----------------------
 
 - Bug #7: Fixed support for composite key at role relation (bethrezen, klimov-paul)
+- Enh #8: `RoleBehavior::$roleAttributes` values now applied before model validation as well (klimov-paul)
 
 
 1.0.1, July 6, 2016
