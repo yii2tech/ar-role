@@ -240,6 +240,7 @@ class RoleBehavior extends Behavior
      * Handles owner 'beforeValidate' event, ensuring role attributes are populated,
      * ensuring the correct validation.
      * @param \yii\base\ModelEvent $event event instance.
+     * @since 1.0.2
      */
     public function beforeValidate($event)
     {
