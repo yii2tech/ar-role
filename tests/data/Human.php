@@ -5,7 +5,7 @@ namespace yii2tech\tests\unit\ar\role\data;
 use yii\db\ActiveRecord;
 
 /**
- * @property integer $id
+ * @property int $id
  * @property string $role
  * @property string $name
  * @property string $address

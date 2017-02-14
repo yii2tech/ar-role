@@ -7,8 +7,8 @@ use yii2tech\ar\role\RoleBehavior;
 /**
  * @property StudentRole $studentRole
  *
- * @property integer $studyGroupId
- * @property boolean $hasScholarship
+ * @property int $studyGroupId
+ * @property bool $hasScholarship
  */
 class Student extends Human
 {

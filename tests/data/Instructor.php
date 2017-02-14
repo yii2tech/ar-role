@@ -6,13 +6,13 @@ use yii\db\ActiveRecord;
 use yii2tech\ar\role\RoleBehavior;
 
 /**
- * @property integer $humanId
- * @property integer $rankId
- * @property integer $salary
+ * @property int $humanId
+ * @property int $rankId
+ * @property int $salary
  *
  * @property Human $human
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $address
  */

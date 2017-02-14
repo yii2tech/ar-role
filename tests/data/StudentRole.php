@@ -5,9 +5,9 @@ namespace yii2tech\tests\unit\ar\role\data;
 use yii\db\ActiveRecord;
 
 /**
- * @property integer $humanId
- * @property integer $studyGroupId
- * @property boolean $hasScholarship
+ * @property int $humanId
+ * @property int $studyGroupId
+ * @property bool $hasScholarship
  */
 class StudentRole extends ActiveRecord
 {
