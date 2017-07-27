@@ -1,5 +1,10 @@
-ActiveRecord Role Inheritance Extension for Yii2
-================================================
+<p align="center">
+    <a href="https://github.com/yii2tech" target="_blank">
+        <img src="https://avatars2.githubusercontent.com/u/12951949" height="100px">
+    </a>
+    <h1 align="center">ActiveRecord Role Inheritance Extension for Yii2</h1>
+    <br>
+</p>
 
 This extension provides support for ActiveRecord relation role (table inheritance) composition.
 
@@ -39,6 +44,7 @@ For example: assume we have a database for the University. There are students st
 instructors teaching the students. Student has a study group and scholarship information, while instructor has a rank
 and salary. However, both student and instructor have name, address, phone number and so on. Thus we can split
 their data in the three different tables:
+
  - 'Human' - stores common data
  - 'Student' - stores student special data and reference to the 'Human' record
  - 'Instructor' - stores instructor special data and reference to the 'Human' record
