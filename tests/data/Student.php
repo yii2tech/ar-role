@@ -13,7 +13,7 @@ use yii2tech\ar\role\RoleBehavior;
 class Student extends Human
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {

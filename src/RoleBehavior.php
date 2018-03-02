@@ -174,7 +174,7 @@ class RoleBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canGetProperty($name, $checkVars = true)
     {
@@ -186,7 +186,7 @@ class RoleBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canSetProperty($name, $checkVars = true)
     {
@@ -200,7 +200,7 @@ class RoleBehavior extends Behavior
     // Method Access Extension:
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __call($name, $params)
     {
@@ -213,7 +213,7 @@ class RoleBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasMethod($name)
     {
@@ -227,7 +227,7 @@ class RoleBehavior extends Behavior
     // Events :
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {
