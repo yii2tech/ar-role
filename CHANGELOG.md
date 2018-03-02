@@ -1,6 +1,12 @@
 Yii 2 ActiveRecord Role Inheritance extension Change Log
 ========================================================
 
+1.0.3 under development
+-----------------------
+
+- Bug #12: Fixed role relation is lost in case using Yii 2.0.14 (klimov-paul)
+
+
 1.0.2, February 14, 2017
 ------------------------
 

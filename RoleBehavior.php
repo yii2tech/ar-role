@@ -101,6 +101,13 @@ class RoleBehavior extends Behavior
      */
     public $isOwnerSlave = false;
 
+    /**
+     * @var BaseActiveRecord|null backup of value of the record related via [[roleRelation]] relation
+     * at the beginning of [[beforeSave()]]. It is needed to bypass [[BaseActiveRecord::resetDependentRelations()]].
+     * @since 1.0.3
+     */
+    private $roleRelationModelBackup;
+
 
     /**
      * Returns the record related via [[roleRelation]] relation.
@@ -283,6 +290,14 @@ class RoleBehavior extends Behavior
      */
     public function beforeSave($event)
     {
+        // Backup to bypass [[BaseActiveRecord::resetDependentRelations()]] :
+        if ($this->owner->isRelationPopulated($this->roleRelation)) {
+            $this->roleRelationModelBackup = $this->owner->{$this->roleRelation};
+        } else {
+            $this->roleRelationModelBackup = null;
+        }
+
+        // Master :
         if (!$this->isOwnerSlave) {
             if (!empty($this->roleAttributes)) {
                 foreach ($this->roleAttributes as $name => $value) {
@@ -292,9 +307,10 @@ class RoleBehavior extends Behavior
             return;
         }
 
+        // Slave :
         $relation = $this->owner->getRelation($this->roleRelation);
 
-        if (!$this->owner->isRelationPopulated($this->roleRelation)) {
+        if ($this->roleRelationModelBackup === null) {
             $ownerLinkPopulated = true;
             foreach ($relation->link as $to => $from) {
                 if ($this->owner->{$from} === null) {
@@ -320,6 +336,9 @@ class RoleBehavior extends Behavior
         foreach ($relation->link as $to => $from) {
             $this->owner->{$from} = $model->{$to};
         }
+
+        $this->roleRelationModelBackup = $model;
+        $this->owner->populateRelation($this->roleRelation, $model);
     }
 
     /**
@@ -329,10 +348,20 @@ class RoleBehavior extends Behavior
      */
     public function afterSave($event)
     {
+        // Restore backup :
+        if ($this->roleRelationModelBackup !== null) {
+            if (!$this->owner->isRelationPopulated($this->roleRelation)) {
+                $this->owner->populateRelation($this->roleRelation, $this->roleRelationModelBackup);
+            }
+            $this->roleRelationModelBackup = null;
+        }
+
+        // Slave :
         if ($this->isOwnerSlave) {
             return;
         }
 
+        // Master :
         if (!$this->owner->isRelationPopulated($this->roleRelation)) {
             return;
         }
