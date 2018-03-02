@@ -112,8 +112,8 @@ class Student extends Human // extending `Human` - not `ActiveRecord`!
     public function behaviors()
     {
         return [
-            'roleBehavior' => [
-                'class' => RoleBehavior::className(), // Attach role behavior
+            'role' => [
+                '__class' => RoleBehavior::class, // Attach role behavior
                 'roleRelation' => 'studentRole', // specify name of the relation to the slave table
                 'roleAttributes' => [
                     'roleId' => Human::ROLE_STUDENT // mark 'Human' record as 'student'
@@ -125,7 +125,7 @@ class Student extends Human // extending `Human` - not `ActiveRecord`!
     public function getStudentRole()
     {
         // Here `StudentRole` is and ActiveRecord, which uses 'Student' table :
-        return $this->hasOne(StudentRole::className(), ['humanId' => 'id']);
+        return $this->hasOne(StudentRole::class, ['humanId' => 'id']);
     }
 }
 ```
@@ -167,8 +167,8 @@ class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
     public function behaviors()
     {
         return [
-            'roleBehavior' => [
-                'class' => RoleBehavior::className(), // Attach role behavior
+            'role' => [
+                '__class' => RoleBehavior::class, // Attach role behavior
                 'roleRelation' => 'human', // specify name of the relation to the master table
                 'isOwnerSlave' => true, // indicate that owner is a role slave - not master
                 'roleAttributes' => [
@@ -180,7 +180,7 @@ class Instructor extends \yii\db\ActiveRecord // do not extending `Human`!
 
     public function getHuman()
     {
-        return $this->hasOne(Human::className(), ['id' => 'humanId']);
+        return $this->hasOne(Human::class, ['id' => 'humanId']);
     }
 }
 ```
@@ -238,8 +238,8 @@ class Instructor extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            'roleBehavior' => [
-                'class' => RoleBehavior::className(), // Attach role behavior
+            'role' => [
+                '__class' => RoleBehavior::class, // Attach role behavior
                 // ...
             ],
         ];

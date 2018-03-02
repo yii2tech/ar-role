@@ -24,8 +24,8 @@ class Instructor extends ActiveRecord
     public function behaviors()
     {
         return [
-            'roleBehavior' => [
-                'class' => RoleBehavior::className(),
+            'role' => [
+                '__class' => RoleBehavior::class,
                 'roleRelation' => 'human',
                 'isOwnerSlave' => true,
                 'roleAttributes' => [
@@ -59,6 +59,6 @@ class Instructor extends ActiveRecord
      */
     public function getHuman()
     {
-        return $this->hasOne(Human::className(), ['id' => 'humanId']);
+        return $this->hasOne(Human::class, ['id' => 'humanId']);
     }
 }

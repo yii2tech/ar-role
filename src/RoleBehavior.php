@@ -25,7 +25,7 @@ use yii\db\BaseActiveRecord;
  *     {
  *         return [
  *             'roleBehavior' => [
- *                 'class' => RoleBehavior::className(), // Attach role behavior
+ *                 '__class' => RoleBehavior::class, // Attach role behavior
  *                 'roleRelation' => 'studentRole', // specify name of the relation to the slave table
  *                 'roleAttributes' => [
  *                     'roleId' => Human::ROLE_STUDENT
@@ -37,7 +37,7 @@ use yii\db\BaseActiveRecord;
  *     public function getStudentRole()
  *     {
  *         // Here `StudentRole` is and ActiveRecord, which uses 'Student' table :
- *         return $this->hasOne(StudentRole::className(), ['humanId' => 'id']);
+ *         return $this->hasOne(StudentRole::class, ['humanId' => 'id']);
  *     }
  * }
  * ```
@@ -50,8 +50,8 @@ use yii\db\BaseActiveRecord;
  *     public function behaviors()
  *     {
  *         return [
- *             'roleBehavior' => [
- *                 'class' => RoleBehavior::className(), // Attach role behavior
+ *             'role' => [
+ *                 '__class' => RoleBehavior::class, // Attach role behavior
  *                 'roleRelation' => 'human', // specify name of the relation to the master table
  *                 'isOwnerSlave' => true, // indicate that owner is a role slave - not master
  *                 'roleAttributes' => [
@@ -63,7 +63,7 @@ use yii\db\BaseActiveRecord;
  *
  *     public function getHuman()
  *     {
- *         return $this->hasOne(Human::className(), ['id' => 'humanId']);
+ *         return $this->hasOne(Human::class, ['id' => 'humanId']);
  *     }
  * }
  * ```

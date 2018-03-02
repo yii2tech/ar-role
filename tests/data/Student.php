@@ -18,8 +18,8 @@ class Student extends Human
     public function behaviors()
     {
         return [
-            'roleBehavior' => [
-                'class' => RoleBehavior::className(),
+            'role' => [
+                '__class' => RoleBehavior::class,
                 'roleRelation' => 'studentRole',
                 'roleAttributes' => [
                     'role' => 'student'
@@ -33,6 +33,6 @@ class Student extends Human
      */
     public function getStudentRole()
     {
-        return $this->hasOne(StudentRole::className(), ['humanId' => 'id']);
+        return $this->hasOne(StudentRole::class, ['humanId' => 'id']);
     }
 }
